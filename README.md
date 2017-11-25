@@ -12,3 +12,4 @@
 * Heap MaxHeap.h MinHeap.h 最大堆 最小堆
 * HBLT MaxHblt.h 最大高度优先左高树
 * CompetitionTree WinnerTree.h 赢者树
+* BinarySearchTree BinarySearchTree.h 二叉搜索树(不带相同关键字)
