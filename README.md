@@ -13,3 +13,5 @@
 * HBLT MaxHblt.h 最大高度优先左高树
 * CompetitionTree WinnerTree.h 赢者树
 * BinarySearchTree BinarySearchTree.h 二叉搜索树(不带相同关键字)
+* BinarySearchTree DuplicateBinarySearchTree.h 二叉搜索树(带相同关键字, 查找大于等于key的最小关键字)
+* BinarySearchTree object_packing.cpp 箱子装载的最优匹配
