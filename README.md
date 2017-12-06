@@ -16,4 +16,4 @@
 * BinarySearchTree DuplicateBinarySearchTree.h 二叉搜索树(带相同关键字, 查找大于等于key的最小关键字)
 * BinarySearchTree object_packing.cpp 箱子装载的最优匹配
 * BinarySearchTree AVLTree.h AVL树
-* BinarySearchTree RedBlackTree.h 红黑树(删除操作待完成)
+* BinarySearchTree RedBlackTree.h 红黑树
