@@ -20,3 +20,5 @@
 * BinarySearchTree RedBlackTree.h 红黑树
 * Graph MatrixGraph.h 矩阵实现的无权有向无向图
 * Graph LinkGraph.h 链表实现的无权有向无向图
+* Graph WeightMatrixGraph.h 矩阵实现的加权有向无向图
+* Graph WeightLinkGraph.h 链表实现的加权有向无向图
