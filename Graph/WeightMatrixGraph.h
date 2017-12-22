@@ -100,7 +100,7 @@ public:
             std::cerr << "此点不在图中！！！" << std::endl;
             return -1;
         }
-        if(!is_directed)
+        if(!is_directed())
         {
             std::cerr << "此图为无向图！！！" << std::endl;
             return -1;
@@ -126,7 +126,7 @@ public:
             std::cerr << "此点不在图中！！！" << std::endl;
             return -1;
         }
-        if(!is_directed)
+        if(!is_directed())
         {
             std::cerr << "此图为无向图！！！" << std::endl;
             return -1;
@@ -155,6 +155,7 @@ public:
 
     std::vector<int> find_path(int source, int dest);
     bool connected();
+    std::vector<int> top_logical_sort();
 
 private:
     std::vector<T> vertices;
@@ -255,6 +256,60 @@ bool WeightMatrixGraph<T>::connected()
     std::vector<bool> reach(vertices.size(), false);
     dfs(0, reach);
     return std::find(reach.cbegin(), reach.cend(), false) == reach.cend();
+}
+
+template <typename T>
+std::vector<int> WeightMatrixGraph<T>::top_logical_sort()
+{
+    std::vector<int> result;
+    if(is_directed())
+    {
+        std::cerr << "此图为无向图！！！" << std::endl;
+        exit(-1);
+    }
+    std::vector<int> in_degree(vertices.size(), 0);
+    std::queue<int> st;
+    for(int i = 0; i < vertices.size(); ++i)
+    {
+        for(int j = 0; j < vertices.size(); ++j)
+        {
+            if(exist_edge(i, j))
+            {
+                ++in_degree[j];
+            }
+        }
+    }
+    for(int i = 0; i < vertices.size();  ++i)
+    {
+        if(in_degree[i] == 0)
+        {
+            st.push(i);
+        }
+    }
+    for(int i = 0; i < vertices.size(); ++i)
+    {
+        if(st.empty())
+        {
+            std::cerr << "此图是有环图！！！" << std::endl;
+            result.clear();
+            exit(-1);
+        }
+        int p = st.front();
+        st.pop();
+        result.push_back(p);
+        for(int j = 0; j < vertices.size(); ++j)
+        {
+            if(exist_edge(i, j))
+            {
+                --in_degree[j];
+                if(in_degree[j] == 0)
+                {
+                    st.push(j);
+                }
+            }
+        }
+    }
+    return result;
 }
 
 #endif //GRAPH_WEIGHTMATRIXGRAPH_H

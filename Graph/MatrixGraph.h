@@ -71,7 +71,7 @@ public:
     {
         if(vertice < 0 || vertice >= vertices.size())
         {
-            std::cerr << "æ­¤ç‚¹ä¸åœ¨å›¾ä¸­ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´Ëµã²»ÔÚÍ¼ÖÐ£¡£¡£¡" << std::endl;
         }
         int degree = 0;
         if(!is_directed())
@@ -84,7 +84,7 @@ public:
         }
         else
         {
-            std::cerr << "æ­¤å›¾ä¸ºæœ‰å‘å›¾ï¼Œæ²¡æœ‰åº¦ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÎªÓÐÏòÍ¼£¬Ã»ÓÐ¶È£¡£¡£¡" << std::endl;
             return  -1;
         }
     }
@@ -93,12 +93,12 @@ public:
     {
         if(vertice < 0 || vertice >= vertices.size())
         {
-            std::cerr << "æ­¤ç‚¹ä¸åœ¨å›¾ä¸­ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´Ëµã²»ÔÚÍ¼ÖÐ£¡£¡£¡" << std::endl;
             return -1;
         }
-        if(!is_directed)
+        if(!is_directed())
         {
-            std::cerr << "æ­¤å›¾ä¸ºæ— å‘å›¾ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
             return -1;
         }
         else
@@ -116,12 +116,12 @@ public:
     {
         if(vertice < 0 || vertice >= vertices.size())
         {
-            std::cerr << "æ­¤ç‚¹ä¸åœ¨å›¾ä¸­ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´Ëµã²»ÔÚÍ¼ÖÐ£¡£¡£¡" << std::endl;
             return -1;
         }
-        if(!is_directed)
+        if(!is_directed())
         {
-            std::cerr << "æ­¤å›¾ä¸ºæ— å‘å›¾ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
             return -1;
         }
         else
@@ -145,6 +145,7 @@ public:
 
     std::vector<int> find_path(int source, int dest);
     bool connected();
+    std::vector<int> top_logical_sort();
 
 private:
     std::vector<T> vertices;
@@ -239,12 +240,66 @@ bool MatrixGraph<T>::connected()
 {
     if(directed)
     {
-        std::cerr << "æ­¤å›¾ä¸ºæœ‰å‘å›¾ï¼Œæ²¡æœ‰è¿žé€šè¿™ä¸ªæ¦‚å¿µï¼" << std::endl;
+        std::cerr << "´ËÍ¼ÎªÓÐÏòÍ¼£¬Ã»ÓÐÁ¬Í¨Õâ¸ö¸ÅÄî£¡" << std::endl;
         return false;
     }
     std::vector<bool> reach(vertices.size(), false);
     dfs(0, reach);
     return std::find(reach.cbegin(), reach.cend(), false) == reach.cend();
+}
+
+template <typename T>
+std::vector<int> MatrixGraph<T>::top_logical_sort()
+{
+    std::vector<int> result;
+    if(is_directed())
+    {
+        std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
+        exit(-1);
+    }
+    std::vector<int> in_degree(vertices.size(), 0);
+    std::queue<int> st;
+    for(int i = 0; i < vertices.size(); ++i)
+    {
+        for(int j = 0; j < vertices.size(); ++j)
+        {
+            if(exist_edge(i, j))
+            {
+                ++in_degree[j];
+            }
+        }
+    }
+    for(int i = 0; i < vertices.size();  ++i)
+    {
+        if(in_degree[i] == 0)
+        {
+            st.push(i);
+        }
+    }
+    for(int i = 0; i < vertices.size(); ++i)
+    {
+        if(st.empty())
+        {
+            std::cerr << "´ËÍ¼ÊÇÓÐ»·Í¼£¡£¡£¡" << std::endl;
+            result.clear();
+            exit(-1);
+        }
+        int p = st.front();
+        st.pop();
+        result.push_back(p);
+        for(int j = 0; j < vertices.size(); ++j)
+        {
+            if(exist_edge(i, j))
+            {
+                --in_degree[j];
+                if(in_degree[j] == 0)
+                {
+                    st.push(j);
+                }
+            }
+        }
+    }
+    return result;
 }
 
 #endif //GRAPH_MATRIXGRAPH_H
