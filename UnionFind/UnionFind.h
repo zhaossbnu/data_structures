@@ -13,7 +13,7 @@ private:
 inline UnionFind::UnionFind(int size)
 {
 	parent.resize(size);
-	for (auto t : parent)
+	for (auto &t : parent)
 	{
 		t = -1;
 	}
@@ -41,12 +41,12 @@ inline void UnionFind::Union(int root1, int root2)
 {
 	if (parent[root1] < parent[root2])
 	{
-		parent[root2] = root1;
 		parent[root1] += parent[root2];
+		parent[root2] = root1;
 	}
 	else
 	{
-		parent[root1] = root2;
 		parent[root2] += parent[root1];
+		parent[root1] = root2;
 	}
 }
