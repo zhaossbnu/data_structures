@@ -12,6 +12,7 @@
 #include <queue>
 #include <cfloat>
 #include <utility>
+#include "WeightMatrixGraph.h"
 
 template <typename T>
 class WeightLinkGraph
@@ -95,7 +96,7 @@ public:
     {
         if(vertice < 0 || vertice >= vertices.size())
         {
-            std::cerr << "æ­¤ç‚¹ä¸åœ¨å›¾ä¸­ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´Ëµã²»ÔÚÍ¼ÖÐ£¡£¡£¡" << std::endl;
         }
         int degree = 0;
         if(!is_directed())
@@ -105,7 +106,7 @@ public:
         }
         else
         {
-            std::cerr << "æ­¤å›¾ä¸ºæœ‰å‘å›¾ï¼Œæ²¡æœ‰åº¦ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÎªÓÐÏòÍ¼£¬Ã»ÓÐ¶È£¡£¡£¡" << std::endl;
             return  -1;
         }
     }
@@ -114,12 +115,12 @@ public:
     {
         if(vertice < 0 || vertice >= vertices.size())
         {
-            std::cerr << "æ­¤ç‚¹ä¸åœ¨å›¾ä¸­ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´Ëµã²»ÔÚÍ¼ÖÐ£¡£¡£¡" << std::endl;
             return -1;
         }
         if(!is_directed)
         {
-            std::cerr << "æ­¤å›¾ä¸ºæ— å‘å›¾ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
             return -1;
         }
         else
@@ -143,12 +144,12 @@ public:
     {
         if(vertice < 0 || vertice >= vertices.size())
         {
-            std::cerr << "æ­¤ç‚¹ä¸åœ¨å›¾ä¸­ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´Ëµã²»ÔÚÍ¼ÖÐ£¡£¡£¡" << std::endl;
             return -1;
         }
         if(!is_directed)
         {
-            std::cerr << "æ­¤å›¾ä¸ºæ— å‘å›¾ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
             return -1;
         }
         else
@@ -164,12 +165,24 @@ public:
         return directed;
     }
 
+    double get_weight(int source, int dest)
+    {
+        for(const auto &it: edges[source])
+        {
+
+        }
+    }
+
     void bfs(int vertice);
     void dfs(int vertice);
 
     std::vector<int> find_path(int source, int dest);
     bool connected();
     std::vector<int> top_logical_sort();
+    std::pair<std::vector<int>, std::vector<double>> dijkstra(int source);
+    std::vector<std::vector<double>> kruskal();
+    std::vector<std::vector<double>> prim();
+
 
 private:
     std::vector<T> vertices;
@@ -179,7 +192,6 @@ private:
     void dfs(int vertice, std::vector<bool> &reach);
     bool find_path(int source, int dest, std::vector<int> &path, std::vector<bool> &reach);
 };
-
 
 
 template <typename T>
@@ -268,7 +280,7 @@ bool WeightLinkGraph<T>::connected()
 {
     if(directed)
     {
-        std::cerr << "æ­¤å›¾ä¸ºæœ‰å‘å›¾ï¼Œæ²¡æœ‰è¿žé€šè¿™ä¸ªæ¦‚å¿µï¼" << std::endl;
+        std::cerr << "´ËÍ¼ÎªÓÐÏòÍ¼£¬Ã»ÓÐÁ¬Í¨Õâ¸ö¸ÅÄî£¡" << std::endl;
         return false;
     }
     std::vector<bool> reach(vertices.size(), false);
@@ -282,7 +294,7 @@ std::vector<int> WeightLinkGraph<T>::top_logical_sort()
     std::vector<int> result;
     if(is_directed())
     {
-        std::cerr << "æ­¤å›¾ä¸ºæ— å‘å›¾ï¼ï¼ï¼" << std::endl;
+        std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
         exit(-1);
     }
     std::vector<int> in_degree(vertices.size(), 0);
@@ -308,7 +320,7 @@ std::vector<int> WeightLinkGraph<T>::top_logical_sort()
     {
         if(st.empty())
         {
-            std::cerr << "æ­¤å›¾æ˜¯æœ‰çŽ¯å›¾ï¼ï¼ï¼" << std::endl;
+            std::cerr << "´ËÍ¼ÊÇÓÐ»·Í¼£¡£¡£¡" << std::endl;
             result.clear();
             exit(-1);
         }
@@ -328,6 +340,171 @@ std::vector<int> WeightLinkGraph<T>::top_logical_sort()
         }
     }
     return result;
+}
+
+template <typename T>
+std::pair<std::vector<int>, std::vector<double>>  WeightLinkGraph<T>::dijkstra(int source)
+{
+    if(!is_directed())
+    {
+        std::cerr << "´ËÍ¼ÎªÎÞÏòÍ¼£¡£¡£¡" << std::endl;
+        exit(-1);
+    }
+    std::vector<bool> reach(vertices.size(), false);
+    std::vector<int> path(vertices.size(), -1);
+    std::vector<double> cost(vertices.size(), DBL_MAX);
+    cost[source] = 0;
+    path[source] = -1;
+    reach[source] = true;
+    for(const auto &it: edges[source])
+    {
+        cost[it.first] = it.second;
+        path[it.first] = source;
+    }
+    for(int i = 0; i < vertices.size(); ++i)
+    {
+        double min_len = DBL_MAX;
+        int current = source;
+        for (int j = 0; j < vertices.size(); ++j)
+        {
+            if (reach[j] == false && cost[j] < min_len)
+            {
+                current = j;
+                min_len = cost[j];
+            }
+        }
+        reach[current] = true;
+        for(const auto &it: edges[current])
+        {
+            if(reach[it.first] == false && cost[current] + it.second < cost[it.first])
+            {
+                cost[it.first] = cost[current] + it.second;
+                path[it.first] = current;
+            }
+        }
+    }
+    return std::make_pair(path, cost);
+}
+
+template <typename T>
+std::vector<std::vector<double>> WeightLinkGraph<T>::kruskal()
+{
+    if(is_directed())
+    {
+        std::cerr << "´ËÍ¼ÎªÓÐÏòÍ¼£¡£¡£¡" << std::endl;
+        exit(-1);
+    }
+    std::vector<std::vector<double>> tree;
+    tree.resize(vertices.size());
+    for (auto &i : tree)
+    {
+        i.resize(vertices.size());
+    }
+    for (int i = 0; i < vertices.size(); ++i)
+    {
+        for (int j = 0; j < vertices.size(); ++j)
+        {
+            tree[i][j] = DBL_MAX;
+        }
+    }
+    UnionFind nodes(vertices.size());
+    std::priority_queue<Edge, std::vector<Edge>, std::greater<Edge>> pq;
+    for (int i = 0; i < vertices.size(); ++i)
+    {
+        for (auto it = edges[i].cbegin(); it != edges[i].cend(); ++it)
+        {
+            pq.push({ i, it->first, it->second });
+        }
+    }
+    int k = 0;
+    while (!pq.empty() && k < vertices.size() - 1)
+    {
+        Edge e = pq.top();
+        pq.pop();
+        int a = nodes.find(e.source);
+        int b = nodes.find(e.dest);
+        if (a != b)
+        {
+            for(auto it = edges[e.source].cbegin(); it != edges[e.source].cend(); ++it)
+            {
+                if(it->first == e.dest)
+                {
+                    tree[e.source][e.dest] = tree[e.dest][e.source] = it->second;
+                    break;
+                }
+            }
+            nodes.Union(a, b);
+            ++k;
+        }
+    }
+    if (k == vertices.size() - 1)
+    {
+        return tree;
+    }
+    else
+    {
+        std::cout << "Ã»ÓÐ×îÐ¡Éú³ÉÊ÷£¡" << std::endl;
+        tree.clear();
+        return tree;
+    }
+}
+
+template <typename T>
+std::vector<std::vector<double>> WeightLinkGraph<T>::prim()
+{
+    if(is_directed())
+    {
+        std::cerr << "´ËÍ¼ÎªÓÐÏòÍ¼£¡£¡£¡" << std::endl;
+        exit(-1);
+    }
+    std::vector<std::vector<double>> tree;
+    tree.resize(vertices.size());
+    for (auto &i : tree)
+    {
+        i.resize(vertices.size());
+    }
+    for (int i = 0; i < vertices.size(); ++i)
+    {
+        for (int j = 0; j < vertices.size(); ++j)
+        {
+            tree[i][j] = DBL_MAX;
+        }
+    }
+    std::vector<int> reach;
+    reach.push_back(0);
+    std::priority_queue<Edge, std::vector<Edge>, std::greater<Edge>> pq;
+    for(auto it = edges[0].cbegin(); it != edges[0].cend(); ++it)
+    {
+        pq.push({0, it->first, it->second});
+    }
+    while(!pq.empty() && reach.size() < vertices.size() -1)
+    {
+        Edge e = pq.top();
+        pq.pop();
+        if (std::find(reach.cbegin(), reach.cend(), e.dest) == reach.cend())
+        {
+            for(auto it = edges[e.source].cbegin(); it != edges[e.source].cend(); ++it)
+            {
+                tree[e.source][e.dest] = tree[e.dest][e.source] = it->second;
+            }
+            reach.push_back(e.dest);
+            for(auto it = edges[e.dest].cbegin(); it != edges[e.dest].cend(); ++it)
+            {
+                pq.push({e.dest, it->first, it->second});
+            }
+        }
+    }
+    if(reach.size() != vertices.size() - 1)
+    {
+        std::cout << "Ã»ÓÐ×îÐ¡Éú³ÉÊ÷£¡" << std::endl;
+        tree.clear();
+        return tree;
+    }
+    else
+    {
+        return tree;
+    }
+
 }
 
 #endif //GRAPH_WEIGHTLINKGRAPH_H
